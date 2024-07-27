@@ -7,21 +7,21 @@ use App\Contracts\ApiController;
 class WorldService implements ApiController
 {
   /**
-   * Summary of return
+   * Return Success with Status 200
    * @param string $value
    * @return string
    */
-  public function return(string $value): string
+  public function return(string $value, int $status = 200): string
   {
     return response()->json([
-      'status' => '200',
+      'status' => $status,
       'data' => [
         'country' => $value,
       ]
     ], 200);
   }
   /**
-   * Summary of returnError
+   * Return Error with Status 500
    * @param string $error
    * @param int $status
    * @return string
