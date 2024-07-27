@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Log;
 
 use App\Contracts\ApiController;
 
@@ -28,6 +29,7 @@ class WorldController extends Controller
 	public function index(string $moveKey, string $option = ''): string
 	{
 		if (!$this->_checkMoveKey($moveKey)) {
+			Log::error('[101]Please check [ReqWorldStr]! Feature not found in World.');
 			return $this->_worldService->returnError("Invalid Access", 403);
 		}
 		;
@@ -36,10 +38,12 @@ class WorldController extends Controller
 		$this->_define($moveKey);
 
 		if (is_null($this->_model)) {
+			Log::error('[2]Model Not Found!');
 			return $this->_worldService->returnError("System Error", 500);
 		}
 
 		if (!method_exists($this->_model, $this->_method)) {
+			Log::error('[3]Method Not Found!');
 			return $this->_worldService->returnError("System Error", 500);
 		}
 
@@ -80,7 +84,8 @@ class WorldController extends Controller
 		$modelName = ucfirst($moveKey) . 'Model';
 		try {
 			return App::make('App\\Models\\' . $modelName);
-		} catch (\Exception) {
+		} catch (\Exception $e) {
+			Log::error('World::_getModel: ' . $e->getMessage());
 			return null;
 		}
 	}
